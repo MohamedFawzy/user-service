@@ -1,0 +1,6 @@
+{
+    "python.pythonPath": "/home/mofawzy/anaconda3/envs/FastApi/bin/python",
+    "python.analysis.extraPaths": [
+        "./backend"
+    ]
+}
