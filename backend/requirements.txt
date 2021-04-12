@@ -3,6 +3,7 @@ fastapi
 uvicorn
 pydantic
 email-validator
+passlib
 # db
 databases[postgresql]
 SQLAlchemy

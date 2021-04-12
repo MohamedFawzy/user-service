@@ -1,5 +1,7 @@
+from os import name
 from typing import List
 from fastapi import APIRouter, Body, Depends
+from sqlalchemy.sql.functions import user
 from starlette.status import HTTP_201_CREATED
 from app.api.services.users import UserService
 
@@ -8,10 +10,11 @@ from app.models.user import userCreate, UserPublic
 router = APIRouter()
 
 
-@router.get("/")
-async def get_all_users() -> List[dict]:
-    users = [{"id": 1, "name": "mohamed", "email": "mfawzy22@gmail.com"}]
-
+@router.get("/", response_model=UserPublic, name="users:find-all", status_code=200)
+async def get_all_users(
+    user_service: UserService = Depends(UserService),
+) -> List[UserPublic]:
+    users = await user_service.find_all_users()
     return users
 
 

@@ -6,6 +6,8 @@ from app.db.repositories.user import UserRepository
 
 from fastapi import HTTPException
 from app.models.user import UserInDB, userCreate
+from passlib.context import CryptContext
+from typing import List
 
 
 class UserService(BaseService):
@@ -13,6 +15,18 @@ class UserService(BaseService):
         self, repo: UserRepository = Depends(get_repository(UserRepository))
     ) -> None:
         super().__init__(repo)
+        self.pwd_context = CryptContext(schemes=["bcrypt"])
+
+    def hash_password(self, *, password: str) -> str:
+        return self.pwd_context.hash(password)
+
+    def verify_password(self, *, plain_password: str, hashed_password: str) -> bool:
+        return self.pwd_context.verify(plain_password, hashed_password)
+
+    async def find_all_users(self) -> List[UserInDB]:
+        result = await self.repository.find_all_users()
+        print("result", result)
+        return result
 
     async def create_user(self, *, new_user: userCreate) -> UserInDB:
 
@@ -22,6 +36,8 @@ class UserService(BaseService):
             raise HTTPException(
                 status_code=HTTP_409_CONFLICT, detail="user already exist"
             )
+
+        new_user.password = self.hash_password(password=new_user.password)
 
         created_user = await self.repository.create_user(new_user=new_user)
         return created_user

@@ -1,4 +1,5 @@
 from typing import List
+from sqlalchemy.sql.functions import user
 from sqlalchemy.sql.sqltypes import Boolean
 from app.db.repositories.base import BaseRepository
 from app.models.user import userCreate, UserInDB
@@ -15,7 +16,7 @@ FIND_EXIST_USER = """
 """
 
 LIST_ALL_USERS = """
-    SELECT id, first_name, last_name, email, is_active FROM users
+    SELECT id, first_name, last_name, email, password, is_active FROM users
 """
 
 
@@ -25,7 +26,8 @@ class UserRepository(BaseRepository):
     """
 
     async def find_all_users(self) -> List[UserInDB]:
-        return await self.db.fetch_one(query=LIST_ALL_USERS)
+        users = await self.db.fetch_one(query=LIST_ALL_USERS)
+        return list(UserInDB(**users))
 
     async def create_user(self, *, new_user: userCreate) -> UserInDB:
         query_values = new_user.dict()
