@@ -1,4 +1,3 @@
-from os import name
 from typing import List
 from fastapi import APIRouter, Body, Depends
 from sqlalchemy.sql.functions import user
@@ -10,12 +9,13 @@ from app.models.user import userCreate, UserPublic
 router = APIRouter()
 
 
-@router.get("/", response_model=UserPublic, name="users:find-all", status_code=200)
+@router.get(
+    "/", response_model=List[UserPublic], name="users:find-all", status_code=200
+)
 async def get_all_users(
     user_service: UserService = Depends(UserService),
 ) -> List[UserPublic]:
-    users = await user_service.find_all_users()
-    return users
+    return await user_service.find_all_users()
 
 
 @router.post(

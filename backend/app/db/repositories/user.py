@@ -26,8 +26,9 @@ class UserRepository(BaseRepository):
     """
 
     async def find_all_users(self) -> List[UserInDB]:
-        users = await self.db.fetch_one(query=LIST_ALL_USERS)
-        return list(UserInDB(**users))
+        users = await self.db.fetch_all(query=LIST_ALL_USERS)
+
+        return [UserInDB(**u) for u in users]
 
     async def create_user(self, *, new_user: userCreate) -> UserInDB:
         query_values = new_user.dict()

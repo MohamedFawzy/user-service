@@ -24,9 +24,7 @@ class UserService(BaseService):
         return self.pwd_context.verify(plain_password, hashed_password)
 
     async def find_all_users(self) -> List[UserInDB]:
-        result = await self.repository.find_all_users()
-        print("result", result)
-        return result
+        return await self.repository.find_all_users()
 
     async def create_user(self, *, new_user: userCreate) -> UserInDB:
 
