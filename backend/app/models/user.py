@@ -24,6 +24,7 @@ class UserInDB(IDModelMixin, UserBase):
     first_name: str
     last_name: str
     email: str
+    is_active: str
 
 
 class UserPublic(IDModelMixin):
